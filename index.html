@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      id="metaDescription"
+      content="Lắc Mâm Việt — game cược 6 món Việt kiểu bầu cua. Đặt xu, lắc mâm, ăn thưởng."
+    />
+    <title id="pageTitle">Lắc Mâm Việt</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <span class="brand-mark" aria-hidden="true">MV</span>
+          <div>
+            <h1 data-i18n="brand.title">Lắc Mâm Việt</h1>
+            <p data-i18n="brand.subtitle">
+              Phở · Bánh mì · Bún bò · Cơm tấm · Bánh xèo · Gỏi cuốn
+            </p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <div class="lang-switch" role="group" data-i18n-aria="ui.lang" aria-label="Ngôn ngữ">
+            <button type="button" class="lang-btn is-active" data-lang="vi" aria-pressed="true">
+              VI
+            </button>
+            <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+            <button type="button" class="lang-btn" data-lang="zh" aria-pressed="false">中文</button>
+          </div>
+          <button id="rulesButton" class="ghost-action" type="button" data-i18n="ui.rules">
+            Luật chơi
+          </button>
+          <div class="wallet-pill" aria-live="polite">
+            <span data-i18n="ui.wallet">Ví xu</span>
+            <strong id="walletValue">1.000</strong>
+          </div>
+        </div>
+      </header>
+
+      <main class="game-layout">
+        <section class="table-zone" data-i18n-aria="ui.tableZone" aria-label="Bàn cược">
+          <div class="dice-strip">
+            <div class="round-status">
+              <span id="roundLabel">Sẵn sàng</span>
+              <strong id="roundResult">0 xu</strong>
+            </div>
+            <div
+              id="diceTray"
+              class="dice-tray"
+              data-i18n-aria="ui.diceResult"
+              aria-label="Kết quả xúc xắc"
+            ></div>
+          </div>
+
+          <div id="bettingGrid" class="betting-grid"></div>
+
+          <div class="payout-hint" id="payoutHint" aria-live="polite">
+            <span data-i18n="ui.potential">Tiềm năng thắng</span>
+            <strong id="potentialPayout">—</strong>
+          </div>
+        </section>
+
+        <aside class="side-rail" data-i18n-aria="ui.controls" aria-label="Bảng điều khiển">
+          <section class="control-panel">
+            <div class="panel-heading">
+              <span data-i18n="ui.betLevel">Mức cược</span>
+              <strong id="selectedChip">50 xu</strong>
+            </div>
+            <div
+              id="chipRack"
+              class="chip-rack"
+              role="group"
+              data-i18n-aria="ui.chooseChip"
+              aria-label="Chọn mức cược"
+            >
+              <button class="chip" type="button" data-chip="10">10</button>
+              <button class="chip is-selected" type="button" data-chip="50">50</button>
+              <button class="chip" type="button" data-chip="100">100</button>
+              <button class="chip" type="button" data-chip="500">500</button>
+            </div>
+
+            <div class="bet-summary">
+              <span data-i18n="ui.currentBet">Đang đặt</span>
+              <strong id="totalBet">0 xu</strong>
+            </div>
+
+            <div class="action-grid">
+              <button id="rollButton" class="primary-action" type="button" data-i18n="ui.roll">
+                Lắc mâm
+              </button>
+              <button id="rebetButton" class="secondary-action" type="button" data-i18n="ui.rebet">
+                Cược lại
+              </button>
+              <button id="clearButton" class="secondary-action" type="button" data-i18n="ui.clear">
+                Xóa cược
+              </button>
+              <button id="resetButton" class="secondary-action" type="button" data-i18n="ui.reset">
+                Chơi lại
+              </button>
+            </div>
+
+            <div class="audio-row">
+              <button
+                id="musicButton"
+                class="music-toggle"
+                type="button"
+                aria-pressed="false"
+                aria-label="Bật nhạc nền"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M9 18V6l10-2v12" />
+                  <circle cx="7" cy="18" r="3" />
+                  <circle cx="17" cy="16" r="3" />
+                </svg>
+                <span id="musicButtonLabel">Bật nhạc</span>
+              </button>
+              <label class="volume-control">
+                <span data-i18n="ui.volume">Âm lượng</span>
+                <input
+                  id="volumeSlider"
+                  type="range"
+                  min="0"
+                  max="100"
+                  value="70"
+                  data-i18n-aria="ui.volumeAria"
+                  aria-label="Âm lượng nhạc và hiệu ứng"
+                />
+              </label>
+            </div>
+
+            <p id="notice" class="notice" aria-live="polite">Chọn món để đặt xu.</p>
+            <p class="hint-line" data-i18n="ui.hint">
+              Click món = đặt · Click phải / nút − = gỡ chip · Space = lắc
+            </p>
+          </section>
+
+          <section class="stats-panel">
+            <div class="panel-heading">
+              <span data-i18n="ui.stats">Thống kê</span>
+              <strong id="statsRounds">0 ván</strong>
+            </div>
+            <dl class="stats-grid">
+              <div>
+                <dt data-i18n="ui.net">Thắng ròng</dt>
+                <dd id="statsNet">0 xu</dd>
+              </div>
+              <div>
+                <dt data-i18n="ui.wins">Ván thắng</dt>
+                <dd id="statsWins">0</dd>
+              </div>
+              <div>
+                <dt data-i18n="ui.losses">Ván thua</dt>
+                <dd id="statsLosses">0</dd>
+              </div>
+              <div>
+                <dt data-i18n="ui.hot">Món hot</dt>
+                <dd id="statsHot">—</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="history-panel">
+            <div class="panel-heading">
+              <span data-i18n="ui.history">Lịch sử</span>
+              <strong id="historyCount">0</strong>
+            </div>
+            <ol id="historyList" class="history-list"></ol>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <div id="rulesModal" class="modal" hidden>
+      <div class="modal-backdrop" data-close-modal></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+        <div class="modal-header">
+          <h2 id="rulesTitle" data-i18n="ui.rulesTitle">Luật chơi</h2>
+          <button
+            type="button"
+            class="modal-close"
+            data-close-modal
+            data-i18n-aria="ui.close"
+            aria-label="Đóng"
+          >
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <ol class="rules-list">
+            <li data-i18n="rules.1" data-i18n-html>
+              Chọn mức chip (10 / 50 / 100 / 500), rồi click món để đặt xu.
+            </li>
+            <li data-i18n="rules.2" data-i18n-html>
+              Click phải hoặc nút <strong>−</strong> trên món để gỡ đúng 1 mức chip đã chọn.
+            </li>
+            <li data-i18n="rules.3" data-i18n-html>
+              Bấm <strong>Lắc mâm</strong> — 3 mặt món xuất hiện ngẫu nhiên.
+            </li>
+            <li>
+              <span data-i18n="rules.4lead">Trúng món đã cược:</span>
+              <ul>
+                <li data-i18n="rules.4a" data-i18n-html>
+                  Trúng 1 lần → nhận <strong>×2</strong> tiền cược món đó
+                </li>
+                <li data-i18n="rules.4b" data-i18n-html>
+                  Trúng 2 lần → nhận <strong>×3</strong>
+                </li>
+                <li data-i18n="rules.4c" data-i18n-html>
+                  Trúng 3 lần → nhận <strong>×4</strong>
+                </li>
+              </ul>
+              <span data-i18n="rules.4note">(Hoàn cược + 1:1 mỗi lần trúng, kiểu bầu cua.)</span>
+            </li>
+            <li data-i18n="rules.5">Món không trúng → mất hết xu đặt trên món đó.</li>
+            <li data-i18n="rules.6" data-i18n-html>
+              <strong>Cược lại</strong> đặt lại đúng cược ván trước (nếu đủ xu).
+            </li>
+            <li data-i18n="rules.7" data-i18n-html>
+              <strong>Chơi lại</strong> reset ví về 1.000 xu (có xác nhận).
+            </li>
+          </ol>
+          <p class="rules-keys" data-i18n="rules.keys" data-i18n-html>
+            Phím tắt: <kbd>1</kbd>–<kbd>4</kbd> chip · <kbd>Space</kbd> lắc · <kbd>C</kbd> xóa ·
+            <kbd>R</kbd> cược lại · <kbd>?</kbd> luật
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div id="confirmModal" class="modal" hidden>
+      <div class="modal-backdrop" data-close-confirm></div>
+      <div
+        class="modal-card modal-card--sm"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirmTitle"
+      >
+        <div class="modal-header">
+          <h2 id="confirmTitle" data-i18n="ui.confirmTitle">Chơi lại?</h2>
+          <button
+            type="button"
+            class="modal-close"
+            data-close-confirm
+            data-i18n-aria="ui.close"
+            aria-label="Đóng"
+          >
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="confirmMessage">Ví và lịch sử sẽ reset về đầu. Bạn chắc không?</p>
+          <div class="confirm-actions">
+            <button
+              id="confirmCancel"
+              class="secondary-action"
+              type="button"
+              data-i18n="ui.cancel"
+            >
+              Hủy
+            </button>
+            <button id="confirmOk" class="primary-action" type="button" data-i18n="ui.reset">
+              Chơi lại
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="brokeBanner" class="broke-banner" hidden>
+      <div>
+        <strong data-i18n="ui.brokeTitle">Hết xu!</strong>
+        <span data-i18n="ui.brokeBody">Bấm Chơi lại để nhận 1.000 xu mới.</span>
+      </div>
+      <button id="brokeReset" class="primary-action" type="button" data-i18n="ui.reset">
+        Chơi lại
+      </button>
+    </div>
+
+    <div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div>
+
+    <script src="i18n.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
